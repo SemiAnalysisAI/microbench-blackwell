@@ -33,9 +33,11 @@ CSV_FIELDS = [
 def find_ncu():
     """Find ncu binary path."""
     result = subprocess.run(["which", "ncu"], capture_output=True, text=True)
+    # result = "/usr/local/cuda-13.2/bin/ncu"
     if result.returncode == 0:
         return result.stdout.strip()
-    for path in ["/usr/local/cuda/bin/ncu", "/opt/nvidia/nsight-compute/ncu"]:
+    result = "/usr/local/cuda-13.2/bin/ncu"
+    for path in ["/usr/local/cuda-13.2/bin/ncu", "/opt/nvidia/nsight-compute/ncu"]:
         if os.path.exists(path):
             return path
     return None
@@ -146,7 +148,7 @@ def main():
                         help=f'SMEM heights (default: {DEFAULT_SMEM_HEIGHTS})')
     args = parser.parse_args()
 
-    ncu_path = find_ncu()
+    ncu_path = "/usr/local/cuda-13.2/bin/ncu"
     if not ncu_path:
         print("Error: ncu not found. Install NVIDIA Nsight Compute.", file=sys.stderr)
         return 1

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
-
-SRC="dsmem_tput_cpasync.cu"
+NVCC=/usr/local/cuda-13.2/bin/nvcc
+SRC="dsmem_tput.cu"
 BIN="dsmem_tput.out"
-NVCC_GENCODE='-gencode=arch=compute_100,code="sm_100,compute_100"'
+NVCC_GENCODE='-gencode=arch=compute_110a,code="sm_110a,compute_110a"'
 THREADS_PER_CTA=512
 LOAD_T=float
 N_ITERS=10000
@@ -93,7 +93,7 @@ for cfg in "${CONFIGS[@]}"; do
     idx=$((idx + 1))
     echo "[$idx/$total] mode=$mode cl=$cl stride=$stride"
 
-    nvcc $NVCC_GENCODE -std=c++17 -Xptxas=-v \
+    $NVCC $NVCC_GENCODE -std=c++17 -Xptxas=-v \
         -DCLUSTER_SIZE=$cl -DTHREADS_PER_CTA=$THREADS_PER_CTA \
         -DLOAD_T=$LOAD_T -DSTRIDE=$stride \
         -DACCESS_MODE=$([ "$mode" = "local" ] && echo 0 || ([ "$mode" = "bcast" ] && echo 1 || echo 2)) \
@@ -106,14 +106,14 @@ for cfg in "${CONFIGS[@]}"; do
             ./"$BIN" 2>/dev/null
     )
 
-    gpu_time=$(echo "$NCU_OUTPUT" | grep "gpu__time_duration" | awk -F'","' '{print $NF}' | tr -d '"')
-    sm_cycles=$(echo "$NCU_OUTPUT" | grep "sm__cycles_elapsed" | awk -F'","' '{print $NF}' | tr -d '"')
-    smem_ld_sum=$(echo "$NCU_OUTPUT" | grep "op_ld.*sum.per_second" | awk -F'","' '{print $NF}' | tr -d '"')
-    smem_ld_max=$(echo "$NCU_OUTPUT" | grep "op_ld.*max.per_second" | tail -1 | awk -F'","' '{print $NF}' | tr -d '"')
-    smem_ld_pct=$(echo "$NCU_OUTPUT" | grep "op_ld.*pct_of_peak" | awk -F'","' '{print $NF}' | tr -d '"')
-    smem_st_sum=$(echo "$NCU_OUTPUT" | grep "op_st.*sum.per_second" | awk -F'","' '{print $NF}' | tr -d '"')
-    smem_st_max=$(echo "$NCU_OUTPUT" | grep "op_st.*max.per_second" | tail -1 | awk -F'","' '{print $NF}' | tr -d '"')
-    smem_st_pct=$(echo "$NCU_OUTPUT" | grep "op_st.*pct_of_peak" | awk -F'","' '{print $NF}' | tr -d '"')
+    gpu_time=$(echo "$NCU_OUTPUT" | grep "gpu__time_duration" | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    sm_cycles=$(echo "$NCU_OUTPUT" | grep "sm__cycles_elapsed" | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    smem_ld_sum=$(echo "$NCU_OUTPUT" | grep "op_ld.*sum.per_second" | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    smem_ld_max=$(echo "$NCU_OUTPUT" | grep "op_ld.*max.per_second" | tail -1 | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    smem_ld_pct=$(echo "$NCU_OUTPUT" | grep "op_ld.*pct_of_peak" | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    smem_st_sum=$(echo "$NCU_OUTPUT" | grep "op_st.*sum.per_second" | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    smem_st_max=$(echo "$NCU_OUTPUT" | grep "op_st.*max.per_second" | tail -1 | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
+    smem_st_pct=$(echo "$NCU_OUTPUT" | grep "op_st.*pct_of_peak" | awk -F'","' '{print $NF}' | tr -d '"'|tr -d ',')
 
     # Push throughput (GB/s) = data_moved / gpu_time_ns
     #   local: all CL CTAs read their own smem -> CL * N_ITERS * total_bytes

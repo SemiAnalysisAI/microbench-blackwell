@@ -1,0 +1,15 @@
+../../cutlass/include/cutlass/gemm/kernel/sm100_gemm_tma_warpspecialized.hpp(410): error: static assertion failed with "SMEM usage exceeded capacity."
+      static_assert(SharedStorageSize <= cutlass::arch::sm100_smem_capacity_bytes, "SMEM usage exceeded capacity.");
+      ^
+          detected during:
+            instantiation of "void cutlass::gemm::kernel::GemmUniversal<ProblemShape_, CollectiveMainloop_, CollectiveEpilogue_, TileSchedulerTag_, std::enable_if_t<std::disjunction_v<cutlass::detail::is_kernel_tag_of<CollectiveMainloop_::DispatchPolicy::Schedule, cutlass::gemm::KernelTmaWarpSpecializedSm100>, cutlass::detail::is_kernel_tag_of<CollectiveMainloop_::DispatchPolicy::Schedule, cutlass::gemm::KernelTmaWarpSpecializedBlockScaledSm100>>, void>>::operator()(const cutlass::gemm::kernel::GemmUniversal<ProblemShape_, CollectiveMainloop_, CollectiveEpilogue_, TileSchedulerTag_, std::enable_if_t<std::disjunction_v<cutlass::detail::is_kernel_tag_of<CollectiveMainloop_::DispatchPolicy::Schedule, cutlass::gemm::KernelTmaWarpSpecializedSm100>, cutlass::detail::is_kernel_tag_of<CollectiveMainloop_::DispatchPolicy::Schedule, cutlass::gemm::KernelTmaWarpSpecializedBlockScaledSm100>>, void>>::Params &, char *) [with ProblemShape_=cute::tuple<int, int, int, int>, CollectiveMainloop_=CollectiveMainloop, CollectiveEpilogue_=CollectiveEpilogue, TileSchedulerTag_=void]" at line 123 of ../../cutlass/include/cutlass/device_kernel.h
+            instantiation of "void cutlass::device_kernel<Operator>(Operator::Params) [with Operator=GemmKernel]" at line 347 of ../../cutlass/include/cutlass/gemm/device/gemm_universal_adapter.h
+            instantiation of "cutlass::Status cutlass::gemm::device::GemmUniversalAdapter<GemmKernel_, std::enable_if_t<cutlass::gemm::detail::IsCutlass3GemmKernel<cutlass::GetUnderlyingKernel_t<GemmKernel_>, void>::value, void>>::initialize(const cutlass::gemm::device::GemmUniversalAdapter<GemmKernel_, std::enable_if_t<cutlass::gemm::detail::IsCutlass3GemmKernel<cutlass::GetUnderlyingKernel_t<GemmKernel_>, void>::value, void>>::Arguments &, void *, cudaStream_t, cutlass::CudaHostAdapter *) [with GemmKernel_=GemmKernel]" at line 220 of /home/net/microbench-blackwell/cutlass_gemm_mainloop/cutlass_gemm_bench.cu
+
+/home/net/microbench-blackwell/cutlass_gemm_mainloop/cutlass_gemm_bench.cu(79): warning #177-D: function "pick_factorization" was declared but never referenced
+  static std::pair<int,int> pick_factorization(int tile_m, int tile_n) {
+                            ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+
+1 error detected in the compilation of "/home/net/microbench-blackwell/cutlass_gemm_mainloop/cutlass_gemm_bench.cu".
