@@ -49,7 +49,7 @@ using namespace cute;
 #endif
 
 // ---- Constants ----
-static constexpr int NUM_SMS = 148;  // B200
+static constexpr int NUM_SMS = 20;  // B200
 static constexpr int K_DIM = 131072; // 128K — vocab-sized K to isolate mainloop steady state
 static constexpr int WARMUP_ITERS = 1;
 static constexpr int BENCH_ITERS = 20;

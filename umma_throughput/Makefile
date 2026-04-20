@@ -1,5 +1,5 @@
-NVCC := nvcc
-NVCCFLAGS := -std=c++17 -gencode arch=compute_100a,code=sm_100a
+NVCC := /usr/local/cuda-13/bin/nvcc
+NVCCFLAGS := -std=c++17 -gencode arch=compute_110a,code=sm_110a
 
 # Defaults
 MMA_FORMAT ?= 0

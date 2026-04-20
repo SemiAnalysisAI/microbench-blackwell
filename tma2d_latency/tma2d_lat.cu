@@ -18,8 +18,8 @@
 
 
 constexpr int NUM_ITERS = 10;
-constexpr int32_t NUM_SMS = 148; // B200 has 148 SMs
-constexpr int32_t L2_SIZE = 132644864; // B200 L2 cache is 126.5 MiB
+constexpr int32_t NUM_SMS = 20; // B200 has 148 SMs
+constexpr int32_t L2_SIZE = 33554432; // B200 L2 cache is 126.5 MiB
 
 // Size of one tile
 constexpr size_t TILE_BYTES = SMEM_WIDTH * SMEM_HEIGHT * sizeof(float);

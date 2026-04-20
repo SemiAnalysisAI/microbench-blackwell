@@ -1,4 +1,5 @@
-NVCCFLAGS := -std=c++17 -gencode arch=compute_100,code=sm_100
+NVCC := /usr/local/cuda-13.2/bin/nvcc
+NVCCFLAGS := -std=c++17 -gencode arch=compute_110,code=sm_110
 
 # Config (override via: make CTAS_PER_SM=2 THREADS_PER_BLOCK=128 LOAD_T=float4)
 CTAS_PER_SM       ?= 1        # MLA production default
@@ -12,13 +13,13 @@ LDGSTS_DEFINES = -DCTAS_PER_SM=$(CTAS_PER_SM) \
 all: ldgsts_lat.out ldgsts_lat.ptx
 
 ldgsts_lat.out: ldgsts_lat.cu
-	nvcc $(NVCCFLAGS) $(LDGSTS_DEFINES) -o $@ $<
+	$(NVCC) $(NVCCFLAGS) $(LDGSTS_DEFINES) -o $@ $<
 
 ldgsts_lat.ptx: ldgsts_lat.cu
-	nvcc $(NVCCFLAGS) $(LDGSTS_DEFINES) -ptx -o $@ $<
+	$(NVCC) $(NVCCFLAGS) $(LDGSTS_DEFINES) -ptx -o $@ $<
 
 bench: ldgsts_lat.out
-	sudo $$(which ncu) --clock-control none \
+	sudo /usr/local/cuda-13.2/bin/ncu --clock-control none \
 		--metrics sm__cycles_elapsed.avg,sm__sass_inst_executed_op_ldgsts.sum,dram__bytes_read.sum.per_second \
 		./ldgsts_lat.out
 
