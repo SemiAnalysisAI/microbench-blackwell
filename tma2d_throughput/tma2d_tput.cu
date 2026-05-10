@@ -19,8 +19,8 @@
 #endif
 
 
-constexpr int32_t NUM_SMS = 148; // B200 has 148 SMs
-constexpr int32_t L2_SIZE = 132644864; // B200 L2 cache is 126.5 MiB
+constexpr int32_t NUM_SMS = 20; // B200 has 148 SMs
+constexpr int32_t L2_SIZE = 33554432; // B200 L2 cache is 126.5 MiB
 constexpr size_t MAX_DATA_VOLUME = 2LL * 1024 * 1024 * 1024;  // 2 GB
 
 constexpr size_t alignDataVolume(size_t factor) {

@@ -1,0 +1,6 @@
+/home/net/microbench-blackwell/cutlass_gemm_mainloop/cutlass_gemm_bench.cu(79): warning #177-D: function "pick_factorization" was declared but never referenced
+  static std::pair<int,int> pick_factorization(int tile_m, int tile_n) {
+                            ^
+
+Remark: The warnings can be suppressed with "-diag-suppress <warning-number>"
+

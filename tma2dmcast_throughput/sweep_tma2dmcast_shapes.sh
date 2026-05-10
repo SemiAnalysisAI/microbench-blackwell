@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-NCU_BIN=$(which ncu)
+NCU_BIN="/usr/local/cuda-13.2/bin/ncu"
 OUTPUT_FILE="tma2dmcast_sweep_full.csv"
 BUILD_DIR="build_sweep"
 SRC="tma2dmcast_tput.cu"
@@ -130,14 +130,27 @@ echo "$HEADER" > "$OUTPUT_FILE"
 # ============================================================================
 # Helpers
 # ============================================================================
+# extract_metric() {
+#     local ncu_output="$1"
+#     local metric_name="$2"
+#     local val
+#     val=$(echo "$ncu_output" | grep "\"${metric_name}\"" | tail -1 \
+#         | awk -F',' '{print $NF}' | tr -d '"' | tr -d ' ')
+#     if [[ -z "$val" ]]; then echo "N/A"; else echo "$val"; fi
+# }
+
 extract_metric() {
     local ncu_output="$1"
     local metric_name="$2"
     local val
+    # 1. 将分隔符改为 '","' 避免切断带逗号的数字
+    # 2. 增加 tr -d ',' 将提取出数字中的千分位逗号删掉
     val=$(echo "$ncu_output" | grep "\"${metric_name}\"" | tail -1 \
-        | awk -F',' '{print $NF}' | tr -d '"' | tr -d ' ')
+        | awk -F'","' '{print $NF}' | tr -d '"' | tr -d ',' | tr -d ' ')
     if [[ -z "$val" ]]; then echo "N/A"; else echo "$val"; fi
 }
+
+
 
 mode_name() {
     case "$1" in
@@ -169,7 +182,7 @@ bin_name() {
 #   B200/B100: compute_100a / sm_100a
 #   H100:      compute_90a  / sm_90a
 # The 'a' suffix = arch-accelerated features (TMA multicast needs this).
-NVCC_GENCODE="${NVCC_GENCODE:--gencode=arch=compute_100a,code=sm_100a}"
+NVCC_GENCODE="${NVCC_GENCODE:--gencode=arch=compute_110a,code=sm_110a}"
 
 # ============================================================================
 # Phase 1: enumerate all configs, compile in parallel
@@ -192,7 +205,7 @@ add_config() {
     bin=$(bin_name "$mode" "$cluster" "$sharing" "$w" "$h")
     if [[ -f "${bin}" ]]; then return; fi
     echo "$mode $cluster $sharing $w $h $bin" >> "$CONFIG_LIST"
-    printf 'nvcc %s -O2 -std=c++17 -lcuda -DCLUSTER_SIZE=%d -DSMEM_WIDTH=%d -DSMEM_HEIGHT=%d -DUSE_MULTICAST=%d -DNUM_WARPS=%d -DSHARING_GROUP_SIZE=%d -o %s %s 2>&1 && echo "OK: %s" || echo "FAIL: %s"\n' \
+    printf '/usr/local/cuda-13.2/bin/nvcc %s -O2 -std=c++17 -lcuda -DCLUSTER_SIZE=%d -DSMEM_WIDTH=%d -DSMEM_HEIGHT=%d -DUSE_MULTICAST=%d -DNUM_WARPS=%d -DSHARING_GROUP_SIZE=%d -o %s %s 2>&1 && echo "OK: %s" || echo "FAIL: %s"\n' \
         "$NVCC_GENCODE" "$cluster" "$w" "$h" "$mode" "$NUM_WARPS" "$sharing" "$bin" "$SRC" "$bin" "$bin" \
         >> "$JOBFILE"
 }

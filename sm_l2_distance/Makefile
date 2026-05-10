@@ -1,7 +1,7 @@
-NVCC       := nvcc
-ARCH       := -gencode=arch=compute_100a,code=\"sm_100a,compute_100a\"
+NVCC       := /usr/local/cuda-13.2/bin/nvcc
+ARCH       := -gencode=arch=compute_110a,code=\"sm_110a,compute_110a\"
 CXXFLAGS   := -O2 -std=c++17
-NUM_SMS    ?= 148
+NUM_SMS    ?= 20
 
 TARGET     := l2_pointer_chase
 SRC        := l2_pointer_chase.cu

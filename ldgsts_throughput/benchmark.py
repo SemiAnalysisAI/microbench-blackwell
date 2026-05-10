@@ -45,11 +45,11 @@ def parse_int_list(s):
 
 def find_ncu():
     """Find ncu binary path."""
-    result = subprocess.run(["which", "ncu"], capture_output=True, text=True)
+    result = subprocess.run(["/usr/local/cuda-13.2/bin/ncu"], capture_output=True, text=True)
     if result.returncode == 0:
         return result.stdout.strip()
     # Try common locations
-    for path in ["/usr/local/cuda/bin/ncu", "/opt/nvidia/nsight-compute/ncu"]:
+    for path in ["/usr/local/cuda-13.2/bin/ncu", "/opt/nvidia/nsight-compute/ncu"]:
         if os.path.exists(path):
             return path
     return None
@@ -91,6 +91,7 @@ def run_benchmark(ctas_per_sm, num_stages, threads_per_block, load_t, ncu_path, 
     ncu_cmd = [
         "sudo", ncu_path,
         "--clock-control", "none",
+        "--target-processes", "all",
         "--csv",
         "--metrics", ",".join(NCU_METRICS),
         "./ldgsts_tput.out",
@@ -114,7 +115,6 @@ def run_benchmark(ctas_per_sm, num_stages, threads_per_block, load_t, ncu_path, 
             print(f"ncu failed for {label}:", file=sys.stderr)
             print(result.stderr, file=sys.stderr)
             return None
-
         metrics = parse_ncu_csv(result.stdout)
         if not metrics:
             print(f"Could not parse ncu output for {label}", file=sys.stderr)
@@ -159,7 +159,7 @@ def main():
                         help=f'Load types, comma-separated (default: {",".join(DEFAULT_LOAD_TYPES)})')
     args = parser.parse_args()
 
-    ncu_path = find_ncu()
+    ncu_path = "/usr/local/cuda-13.2/bin/ncu" #find_ncu()
     if not ncu_path:
         print("Error: ncu not found. Install NVIDIA Nsight Compute.", file=sys.stderr)
         return 1
@@ -200,7 +200,7 @@ def main():
                         csv_file.flush()
                         result_count += 1
                         bw_gbps = result['DRAMBandwidthBps'] / 1e9
-                        ipc = result['LDGSTSPerCycle']
+                        ipc = result['LDGSTSWarpPerCycle']
                         print(f"[{run_idx}/{total_runs}] CTAs={ctas:2d}, stages={stages}, "
                               f"threads={threads:4d}, load={load_t:6s}: "
                               f"{bw_gbps:.2f} GB/s, {ipc:.4f} LDGSTS/cyc", file=sys.stderr)

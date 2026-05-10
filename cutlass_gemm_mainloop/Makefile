@@ -1,5 +1,6 @@
+NVCC := /usr/local/cuda-13.2/bin/nvcc
 CUTLASS_PATH := ../../cutlass
-NVCCFLAGS := -std=c++17 --expt-relaxed-constexpr -gencode=arch=compute_100a,code=\"sm_100a,compute_100a\"
+NVCCFLAGS := -std=c++17 --expt-relaxed-constexpr -gencode=arch=compute_110a,code=\"sm_110a,compute_110a\"
 INCLUDES := -I$(CUTLASS_PATH)/include -I$(CUTLASS_PATH)/tools/util/include
 
 # Config (override via make TILE_M=128 STAGES=4 etc.)
@@ -15,7 +16,7 @@ DEFINES = -DTILE_M=$(TILE_M) -DTILE_N=$(TILE_N) -DTILE_K=$(TILE_K) \
 all: cutlass_gemm_bench.out
 
 cutlass_gemm_bench.out: cutlass_gemm_bench.cu
-	nvcc $(NVCCFLAGS) $(INCLUDES) $(DEFINES) -lcuda -o $@ $<
+		$(NVCC) $(NVCCFLAGS) $(INCLUDES) $(DEFINES) -lcuda -o $@ $<
 
 bench: cutlass_gemm_bench.out
 	./$<

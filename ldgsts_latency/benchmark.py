@@ -38,8 +38,8 @@ CSV_FIELDS = [
     'LatencyNsMedian',
 ]
 
-B200_CLOCK_GHZ = 1.965  # B200 SM clock ~1.965 GHz
-NUM_SMS = 148
+B200_CLOCK_GHZ = 1.575  # B200 SM clock ~1.575 GHz
+NUM_SMS = 20
 
 
 def run_benchmark(ctas, threads, load_t, verbose=False):
