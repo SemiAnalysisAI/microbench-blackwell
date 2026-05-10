@@ -6,6 +6,8 @@ elementwise throughput.
 
 https://newsletter.semianalysis.com/p/dissecting-nvidia-blackwell-tensor
 
+<img width="1456" height="1231" alt="image" src="https://github.com/user-attachments/assets/104eabab-7c77-403f-b669-3402cc7a4b86" />
+
 ## Benchmarks
 
 | Path | Purpose |
@@ -17,9 +19,6 @@ https://newsletter.semianalysis.com/p/dissecting-nvidia-blackwell-tensor
 | `umma_throughput/` | UMMA tensor-core throughput |
 | `umma_latency/` | UMMA tensor-core latency |
 | `elementwise_throughput/` | fp32 HBM-resident activation/elementwise throughput |
-
-<img width="1456" height="1231" alt="image" src="https://github.com/user-attachments/assets/104eabab-7c77-403f-b669-3402cc7a4b86" />
-
 
 ## Acknowledgements
 
